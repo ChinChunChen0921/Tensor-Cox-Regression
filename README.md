@@ -9,7 +9,7 @@
 
 1. Change your directory in TensorCoxReg_Main.R to source TensorCoxReg_Function.R and load the crc_data.RData.
 
-## Instruction about the CRC data.
+## Description about the CRC data.
 
 1. The data contain information of 555 subjects.
 2. The progression free survival time and status are the outcomes of the model. 
@@ -18,7 +18,13 @@
 
 ## Instruction about the main function TensorCox().
 
-### arg
+### Description
+
+### Usage
+- TensorCox()
+### Arguments
+
+### Value
 
 * A
 
