@@ -11,7 +11,6 @@
 
 ## TensorCox() Function Instructions
 
-### Description
 
 ### Usage
     TensorCox(DATA, n_R = n_R, opt = opt, max_ite = max_ite, tol = tol)
