@@ -21,7 +21,7 @@
 ### Description
 
 ### Usage
-- TensorCox()
+  TensorCox()
 ### Arguments
 
 ### Value
