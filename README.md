@@ -13,7 +13,7 @@
 
 1. The dataset includes information on 555 subjects.
 2. It focuses on progression-free survival time and status as the model's outcomes.
-3. Each subject has three clinical covariates (age, gender, and stage) and second-order tensor covariates for 9 genes across 3 omic platforms.
+3. Each subject has three classical covariates (age, gender, and stage) and second-order tensor covariates for 9 genes across 3 omic platforms.
 4. The data within each platform are standardized, having a mean of 0 and a standard deviation of 1 across samples.
 
 ## TensorCox() Function Instructions
