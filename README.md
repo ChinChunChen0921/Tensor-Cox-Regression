@@ -23,19 +23,19 @@
 ### Usage
     TensorCox(DATA, n_R = n_R, opt = opt, max_ite = max_ite, tol = tol)
 ### Arguments
-* DATA
+* DATA  
   A list. **DATA$surv.t** is a vector of the surivial time. **DATA$status** is a vector of the status. **DATA$z** is a matrix with clinical covariates. **DATA$X** is a three-dimensional array representing the tensor covariates. 
 
-* n_R
+* n_R  
   A numerical constant. A predefined value determines the rank for the rank-R decomposition.
 
-* opt
+* opt  
   Two options for optimization stopping criterion (**opt=1** or **opt=1**)
 
-* max_ite
+* max_ite  
   The value of maximum iterations for the algorithm.
 
-* tol
+* tol  
   The value of tolerance with respect to optimization.
 
 ### Value
