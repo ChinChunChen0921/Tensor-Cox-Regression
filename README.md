@@ -1,1 +1,2 @@
-# Tensor Cox Regression
+# Multi-omics integration analysis using tensor-based covariates in Cox regression modeling
+
