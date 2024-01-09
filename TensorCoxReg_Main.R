@@ -83,7 +83,7 @@ surv.dat <- list(n = n, z = z, surv.t = surv.t, status = status, X = X,
 
 opt <- 1 # 'opt' can be set to 1 or 2 to represent different optimization 
 max_ite <- 200 # The maximum number of iterations
-tol <- 10^-6 # Stopping criterions.
+tol <- 10^-6 # Stopping criterion
 # n_R is the rank for rank-R decomposition
 res_nR1 <- TensorCox(DATA = surv.dat, n_R = 1, opt = opt, max_ite = max_ite, tol)
 res_nR2 <- TensorCox(DATA = surv.dat, n_R = 2, opt = opt, max_ite = max_ite, tol)
