@@ -176,6 +176,6 @@ Calculate_IC <- function(DATA, n_R, B, beta, df){
   }
   AIC <- -2*mlpl+2*df
   # BIC use the number of events in the penalty term
-  BIC_NoE<- -2*mlpl+log(sum(status))*df
-  return(list(AIC = AIC, BIC_NoE = BIC_NoE))
+  BIC<- -2*mlpl+log(sum(status))*df
+  return(list(AIC = AIC, BIC = BIC))
 }

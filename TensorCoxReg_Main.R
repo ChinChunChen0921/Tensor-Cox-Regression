@@ -8,26 +8,10 @@ rm(list=ls())
 ##    and store the under "YourDirectory"
 ##---------------
 
-
 library(survival)
+
 codedir <- "YourDirectory/"
 source(paste0(codedir,"TensorCoxReg_Function.r"))
-
-
-# load the CRC data
-
-## The tensor covariates of 555 subject, each subject has a 3-by-13 matrix 
-## represents 9 genes across 3 omic platforms.
-# crc_data$X; dim(crc_data$X)
-
-## The progression free survial (PFS) time
-# crc_data$surv.t
-
-## Status of PFS
-# crc_data$status
-
-## Three clinical covariates: age, gender, stage
-# crc_data$z
 
 # Main function
 TensorCox <- function(DATA, n_R = n_R, opt = opt, 
@@ -70,8 +54,49 @@ TensorCox <- function(DATA, n_R = n_R, opt = opt,
   return(result)
 }
 
-# The input data shoud include four items X, surv.t, status and z
+# B with T pattern
+
+B_T <- matrix(0,6,6)
+B_T[1,] <- rnorm(6, mean = 0.5, sd = 0.25)
+B_T[,3] <- rnorm(6, mean = 0.5, sd = 0.25)
+
+# Simulation data
+n <- 500
+p <- 0.5
+cen.theta <- 1
+lambda <- 1
+betas <- c(0.2,0.5)
+z1 <- as.matrix(rbinom(n, 1, p), nrow = n) # binary covariate
+z2 <- as.matrix(rnorm(n), nrow = n) # normal covariate
+z <- cbind(z1, z2)
+B_shape <- B_T
+n_P <- nrow(B_shape)
+n_G <- ncol(B_shape)
+X <- array(rnorm(n*n_P*n_G, mean = 0, sd = 1), dim=c(n_P, n_G, n))
+cen.t <- runif(n, 0, cen.theta) # censoring time
+surv.t <- as.numeric(- log(runif(n,0,1)) / (lambda*exp(z %*% betas+ X %hp% B_shape)))
+status <- ifelse(surv.t < cen.t, 1, 0)
+surv.dat <- list(n = n, z = z, surv.t = surv.t, status = status, X = X, 
+                 cen.theta = cen.theta)
+
+# Main code
+
+opt <- 1 # 'opt' can be set to 1 or 2 to represent different optimization 
+max_ite <- 200 # The maximum number of iterations
+tol <- 10^-6 # Stopping criterions.
 # n_R is the rank for rank-R decomposition
-# 'opt' can be set to 1 or 2 to represent different optimization 
-# stopping criterions.
+res_nR1 <- TensorCox(DATA = surv.dat, n_R = 1, opt = opt, max_ite = max_ite, tol)
+res_nR2 <- TensorCox(DATA = surv.dat, n_R = 2, opt = opt, max_ite = max_ite, tol)
+res_nR3 <- TensorCox(DATA = surv.dat, n_R = 3, opt = opt, max_ite = max_ite, tol)
+
+# Visualize the estimates of B
+par(mfrow = c(1,4))
+image(B_T)
+image(res_nR1$B_EST)
+image(res_nR2$B_EST)
+image(res_nR3$B_EST)
+
+# Check the BIC (consider the number of events in the penalty term)
+res_nR1$IC$BIC; res_nR2$IC$BIC; res_nR3$IC$BIC
+
 
