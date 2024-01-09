@@ -8,7 +8,7 @@
 ## Execution
 
 1. In TensorCoxReg_Main.R, change your working directory to source TensorCoxReg_Function.R.
-2. TensorCoxReg_Main.R provides a demonstration using simulation data for illustration purposes.
+2. In TensorCoxReg_Main.R, we provide a demonstration using simulation data for illustration purposes.
  
 ## TensorCox() Function Instructions
 
