@@ -8,9 +8,10 @@ rm(list=ls())
 ##    and store the under "YourDirectory"
 ##---------------
 
+set.seed(123)
 library(survival)
 
-codedir <- "YourDirectory/"
+# codedir <- "YourDirectory/"
 source(paste0(codedir,"TensorCoxReg_Function.r"))
 
 # Main function
@@ -61,20 +62,25 @@ B_T[1,] <- rnorm(6, mean = 0.5, sd = 0.25)
 B_T[,3] <- rnorm(6, mean = 0.5, sd = 0.25)
 
 # Simulation data
-n <- 500
-p <- 0.5
-cen.theta <- 1
-lambda <- 1
-betas <- c(0.2,0.5)
+n <- 500 # sample size
+cen.theta <- 1 # theta to control the censoring rate
+lambda <- 1 # baseline hazard
+p <- 0.5 # parameter for binary covariate
 z1 <- as.matrix(rbinom(n, 1, p), nrow = n) # binary covariate
 z2 <- as.matrix(rnorm(n), nrow = n) # normal covariate
 z <- cbind(z1, z2)
+betas <- c(0.2,0.5) # effects related to z
+
 B_shape <- B_T
 n_P <- nrow(B_shape)
 n_G <- ncol(B_shape)
-X <- array(rnorm(n*n_P*n_G, mean = 0, sd = 1), dim=c(n_P, n_G, n))
-cen.t <- runif(n, 0, cen.theta) # censoring time
-surv.t <- as.numeric(- log(runif(n,0,1)) / (lambda*exp(z %*% betas+ X %hp% B_shape)))
+# tensor covariate
+X <- array(rnorm(n*n_P*n_G, mean = 0, sd = 1), dim=c(n_P, n_G, n)) 
+# censoring time
+cen.t <- runif(n, 0, cen.theta) 
+# actual survival time
+surv.t <- as.numeric(-log(runif(n,0,1))/(lambda*exp(z%*%betas + X%hp%B_shape))) 
+# status of the occurrence of event
 status <- ifelse(surv.t < cen.t, 1, 0)
 surv.dat <- list(n = n, z = z, surv.t = surv.t, status = status, X = X, 
                  cen.theta = cen.theta)
@@ -83,11 +89,15 @@ surv.dat <- list(n = n, z = z, surv.t = surv.t, status = status, X = X,
 
 opt <- 1 # 'opt' can be set to 1 or 2 to represent different optimization 
 max_ite <- 200 # The maximum number of iterations
-tol <- 10^-6 # Stopping criterion
+tol <- 10^-6 # Stopping criterions.
 # n_R is the rank for rank-R decomposition
-res_nR1 <- TensorCox(DATA = surv.dat, n_R = 1, opt = opt, max_ite = max_ite, tol)
-res_nR2 <- TensorCox(DATA = surv.dat, n_R = 2, opt = opt, max_ite = max_ite, tol)
-res_nR3 <- TensorCox(DATA = surv.dat, n_R = 3, opt = opt, max_ite = max_ite, tol)
+res_nR1 <- TensorCox(DATA = surv.dat, n_R = 1, opt = opt, 
+                     max_ite = max_ite, tol = tol)
+res_nR2 <- TensorCox(DATA = surv.dat, n_R = 2, opt = opt, 
+                     max_ite = max_ite, tol = tol)
+res_nR3 <- TensorCox(DATA = surv.dat, n_R = 3, opt = opt, 
+                     max_ite = max_ite, tol = tol)
+
 
 # Visualize the estimates of B
 par(mfrow = c(1,4))
@@ -96,7 +106,7 @@ image(res_nR1$B_EST)
 image(res_nR2$B_EST)
 image(res_nR3$B_EST)
 
-# Check the AIC (consider the number of events in the penalty term)
+# Check the AIC
 res_nR1$IC$AIC; res_nR2$IC$AIC; res_nR3$IC$AIC
 
 
