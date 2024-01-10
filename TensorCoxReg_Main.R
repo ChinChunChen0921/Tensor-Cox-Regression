@@ -96,7 +96,7 @@ image(res_nR1$B_EST)
 image(res_nR2$B_EST)
 image(res_nR3$B_EST)
 
-# Check the BIC (consider the number of events in the penalty term)
-res_nR1$IC$BIC; res_nR2$IC$BIC; res_nR3$IC$BIC
+# Check the AIC (consider the number of events in the penalty term)
+res_nR1$IC$AIC; res_nR2$IC$AIC; res_nR3$IC$AIC
 
 
