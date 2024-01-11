@@ -1,12 +1,12 @@
 Sur_Coef <- function (X, surv.t, status, offset_vec) {
   coefficients(coxph(Surv(surv.t, status) ~ X + offset(offset_vec)))
 }
-CoxTensor_Est <- function(DATA, n_R, opt, max_ite, tol){
+CoxTensor_Est <- function(DATA, n_R, max_ite, tol){
   
   `%w%` <- function(X, B) sapply(1:dim(X)[3], function(i) X[, , i] %*% B)
   `%wt%` <- function(X, B) sapply(1:dim(X)[3], function(i) t(X[, , i]) %*% B)
   `%hp%` <- function (X, B) sapply(1:dim(X)[3], function(i) sum(X[, , i] * B))
-  
+
   X <- DATA$X; y <- DATA$surv.t; status <- DATA$status; W <- as.matrix(DATA$z)
   n_vec <- dim(X); n <- n_vec[3]; n_P <- n_vec[1]; n_G <- n_vec[2]
   n_d <- ncol(W)
@@ -26,7 +26,15 @@ CoxTensor_Est <- function(DATA, n_R, opt, max_ite, tol){
   B_2 <- matrix(0, n_G, n_R)
   B <- B_1 %*% t(B_2)
   
-  test <- 1
+  S <- X %hp% B + W %*% beta
+  exp_S <- exp(S)
+  mlpl <- 0
+  for (i in 1:n){
+    mlpl <- mlpl + status[i]*(S[i]-log(sum(exp_S[i:n])))
+  }
+  # initial log partial likelihood
+  initial_mlpl <- mlpl
+  
   for (ite_index in 1:max_ite) {
     offset_vec <- W %*% beta
     # Update B2
@@ -40,19 +48,23 @@ CoxTensor_Est <- function(DATA, n_R, opt, max_ite, tol){
     offset_vec <- X %hp% B_new
     # Update beta
     beta_new <- Sur_Coef(W, y, status, offset_vec)
-    # two options for 
-    if (opt == 1) {
-      test <- max(max(abs(B_new - B)), max(abs(beta_new - beta)))
-    }
-    if (opt == 2) {
-      test <- max(c(abs(B_1 - B_1_new)), c(abs(B_2 - B_2_new)), abs(beta_new - beta))
-    }
+    
     B_1 <- B_1_new
     B_2 <- B_2_new
     beta <- beta_new
     B <- B_new
-    if (test < tol) 
+
+    S <- X %hp% B + W %*% beta
+    exp_S <- exp(S)
+    mlpl_new <- 0
+    for (i in 1:n){
+      mlpl_new <- mlpl_new + status[i]*(S[i]-log(sum(exp_S[i:n])))
+    }
+    if (abs(mlpl_new - mlpl) < tol){
+      final_mlpl <- mlpl_new
       break
+    }
+    mlpl <- mlpl_new
   }
   return(list(b_Est = beta, B_Est = B, 
               B1_Est = B_1, B2_Est = B_2, 
@@ -177,5 +189,46 @@ Calculate_IC <- function(DATA, n_R, B, beta, df){
   AIC <- -2*mlpl+2*df
   # BIC use the number of events in the penalty term
   BIC<- -2*mlpl+log(sum(status))*df
-  return(list(AIC = AIC, BIC = BIC))
+  return(list(mlpl = mlpl, AIC = AIC, BIC = BIC))
+}
+
+####### Main function #########
+TensorCox <- function(DATA, n_R = n_R, max_ite = max_ite, tol = tol){
+  n_d <- ncol(DATA$z)
+  n_P <- dim(DATA$X)[1]
+  n_G <- dim(DATA$X)[2]
+  n <- dim(DATA$X)[3]
+  df <- n_d + (n_G + n_P - n_R) * n_R
+  
+  Estimate <- CoxTensor_Est(DATA = DATA, n_R = n_R, 
+                            max_ite = max_ite, tol = tol)
+  Variance <- CoxTensor_Test(DATA = DATA, n_R = n_R, beta = Estimate$b_Est,
+                             B1 = Estimate$B1_Est, B2 = Estimate$B2_Est)
+  IC <- Calculate_IC(DATA = DATA, n_R = n_R, df = df, 
+                     B = Estimate$B_Est, beta = Estimate$b_Est)
+  sigular <- Variance$singular_text
+  if (inherits(Variance, "try-error")) {
+    df <- prod(dim(B))
+    Std_B <- matrix(NA, df, df)
+    Std_b <- matrix(NA, n_d, n_d)
+    # print('Std_B NA')
+  }else{
+    V_B <- Variance$V_B
+    V_b <- Variance$V_b
+    Std_B <- sqrt(t(matrix(diag(Variance$V_B), n_G, n_P)))
+    Std_b <- sqrt(as.matrix(diag(Variance$V_b)))
+  }
+  if (is.na(Std_B[1])) {
+    B_PV <- Std_B
+    b_PV <- Std_b
+  }else{
+    B_PV <- pnorm(-abs(Estimate$B_Est/Std_B)) * 2
+    b_PV <- pnorm(-abs(Estimate$b_Est/Std_b)) * 2
+  }
+  result <- list(ite = Estimate$ite, 
+                 b_EST = Estimate$b_Est, b_SD = Std_b,
+                 B_EST = Estimate$B_Est, B_SD = Std_B,
+                 B_PV = B_PV, b_PV = b_PV, 
+                 IC = IC, df = df)
+  return(result)
 }
