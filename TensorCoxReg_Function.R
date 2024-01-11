@@ -193,6 +193,7 @@ Calculate_IC <- function(DATA, n_R, B, beta, df){
 }
 
 ####### Main function #########
+                                   
 TensorCox <- function(DATA, n_R = n_R, max_ite = max_ite, tol = tol){
   n_d <- ncol(DATA$z)
   n_P <- dim(DATA$X)[1]
