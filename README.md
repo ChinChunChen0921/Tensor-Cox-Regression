@@ -14,13 +14,11 @@
 
 
 ### Usage
-    TensorCox(DATA, n_R = n_R, opt = opt, max_ite = max_ite, tol = tol)
+    TensorCox(DATA, n_R = n_R, max_ite = max_ite, tol = tol)
 ### Arguments
 * `DATA`: A list containing **DATA$surv.t** (survival time vector), **DATA$status** (status vector), **DATA$z** (matrix of classical covariates), and **DATA$X** (three-dimensional array of tensor covariates).
 
 * `n_R`: A numerical constant specifying the rank for the rank-R decomposition.
-
-* `opt`: Options for the optimization stopping criterion (**opt=1** or **opt=2**).
 
 * `max_ite`: Maximum number of iterations for the algorithm.
 
@@ -28,15 +26,19 @@
 
 ### Value
 
-* `ite`: Number of iterations completed by the algorithm.
+* `ite`: The number of iterations completed by the algorithm.
 
-* `b_EST`: Estimated coefficients for classical covariates.
+* `b_EST`: The estimated coefficients for classical covariates.
 
-* `b_SE`: Estimated standard deviation of coefficients for classical covariates.
+* `b_SE`: The estimated standard deviation of coefficients for classical covariates.
 
-* `B_EST`: Estimated coefficient matrix for tensor covariates.
+* `b_PV`: The p-value for classical covariates.
 
-* `B_SE`: Estimated standard deviation of coefficients for tensor covariates.
+* `B_EST`: The estimated coefficient matrix for tensor covariates.
+
+* `B_SE`: The estimated standard deviation of coefficients for tensor covariates.
+
+* `B_PV`: The p-value for tensor covariates.
 
 * `IC`: Information criteria, including AIC and BIC with the number of events in the penalty term.
 
