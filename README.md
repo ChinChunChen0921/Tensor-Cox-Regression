@@ -16,13 +16,13 @@
 ### Usage
     TensorCox(time, status, X, z, n_R, max_ite = 200, tol = 10^-6)
 ### Arguments
-* `time`: survival time vector.
+* `time`: A vector of survival time.
 
-* `status`: status vector.
+* `status`: A vector of status.
 
-* `X`: three-dimensional array of tensor covariates.
+* `X`: A three-dimensional array of tensor covariates.
 
-* `z`: matrix of classical covariates.
+* `z`: A matrix of classical covariates.
 
 * `n_R`: A numerical constant specifying the rank for the rank-R decomposition.
 
