@@ -5,7 +5,7 @@ library(survival)
 
 ####### Import data ###########################################################
 
-
+# set your working directory 
 setwd('YourDirectory/')
 source("TensorCoxReg_Function.r")
 clinical_data <- read.csv('clinical_data.csv')
@@ -20,12 +20,12 @@ status <- clinical_data$status
 # clinical covariates
 z <- as.matrix(clinical_data[,!colnames(clinical_data)%in%c('time', 'status')])
 # transform multi-omic data into tensor
-n_subject <- length(unique(tensor_data$subject))
+n_id <- length(unique(tensor_data$id))
 n_platform <- length(unique(tensor_data$platform))
 n_gene <- length(unique(tensor_data$gene))
-X <- array(NA, dim = c(n_platform, n_gene, n_subject))
-for (i in 1:n_subject){
-  tmp <- tensor_data[tensor_data$subject == i, 2:4]
+X <- array(NA, dim = c(n_platform, n_gene, n_id))
+for (i in 1:n_id){
+  tmp <- tensor_data[tensor_data$id == i, 2:4]
   X[,,i] <- as.matrix(reshape(tmp, idvar = c('platform'), 
                               timevar =  'gene', 
                               direction = 'wide')[,-1])
@@ -50,3 +50,4 @@ image(t(res_nR3$B_EST[6:1,]))
 
 # Check the AIC
 res_nR1$IC$AIC; res_nR2$IC$AIC; res_nR3$IC$AIC
+
