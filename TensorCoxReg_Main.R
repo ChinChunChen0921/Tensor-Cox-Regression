@@ -19,7 +19,7 @@ time <- clinical_data$time
 status <- clinical_data$status
 # clinical covariates
 z <- as.matrix(clinical_data[,!colnames(clinical_data)%in%c('time', 'status')])
-# transform multi-omic data into tensor
+# transform multi-omic data into tensor covariates
 n_id <- length(unique(tensor_data$id))
 n_platform <- length(unique(tensor_data$platform))
 n_gene <- length(unique(tensor_data$gene))
