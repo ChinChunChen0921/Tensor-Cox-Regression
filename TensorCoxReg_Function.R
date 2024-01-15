@@ -193,14 +193,14 @@ Calculate_IC <- function(DATA, n_R, B, beta, df){
 }
 
 ####### Main function #########
-                                   
-TensorCox <- function(DATA, n_R = n_R, max_ite = max_ite, tol = tol){
-  n_d <- ncol(DATA$z)
-  n_P <- dim(DATA$X)[1]
-  n_G <- dim(DATA$X)[2]
-  n <- dim(DATA$X)[3]
-  df <- n_d + (n_G + n_P - n_R) * n_R
+TensorCox <- function(time, status, X, z, n_R, max_ite = 200, tol = 10^-6){
   
+  n_d <- ncol(z)
+  n_P <- dim(X)[1]
+  n_G <- dim(X)[2]
+  n <- dim(X)[3]
+  df <- n_d + (n_G + n_P - n_R) * n_R
+  DATA <- list(surv.t = time, status = status, z = z, X = X)
   Estimate <- CoxTensor_Est(DATA = DATA, n_R = n_R, 
                             max_ite = max_ite, tol = tol)
   Variance <- CoxTensor_Test(DATA = DATA, n_R = n_R, beta = Estimate$b_Est,
