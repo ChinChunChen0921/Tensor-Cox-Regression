@@ -45,8 +45,11 @@ res_nR3 <- TensorCox(time = time, status = status, X = X, z = z, n_R = 3)
 # Visualize the estimates of B
 par(mfrow = c(1,3))
 image(t(res_nR1$B_EST[6:1,]))
+title(main = "Rank 1", cex.main = 3)
 image(t(res_nR2$B_EST[6:1,]))
+title(main = "Rank 2", cex.main = 3)
 image(t(res_nR3$B_EST[6:1,]))
+title(main = "Rank 3", cex.main = 3)
 
 # Check the AIC
 res_nR1$IC$AIC; res_nR2$IC$AIC; res_nR3$IC$AIC
