@@ -14,15 +14,21 @@
 
 
 ### Usage
-    TensorCox(DATA, n_R = n_R, max_ite = max_ite, tol = tol)
+    TensorCox(time, status, X, z, n_R, max_ite = 200, tol = 10^-6)
 ### Arguments
-* `DATA`: A list containing **DATA$surv.t** (survival time vector), **DATA$status** (status vector), **DATA$z** (matrix of classical covariates), and **DATA$X** (three-dimensional array of tensor covariates).
+* `time`: survival time vector.
+
+* `status`: status vector.
+
+* `X`: three-dimensional array of tensor covariates.
+
+* `z`: matrix of classical covariates.
 
 * `n_R`: A numerical constant specifying the rank for the rank-R decomposition.
 
-* `max_ite`: Maximum number of iterations for the algorithm.
+* `max_ite`: The maximum number of iterations for the algorithm. The default is set to 200 iterations.
 
-* `tol`: Tolerance level for optimization.
+* `tol`: Tolerance level for the difference in partial likelihood values between two iterations. The default value is set to $10^{-6}$.
 
 ### Value
 
