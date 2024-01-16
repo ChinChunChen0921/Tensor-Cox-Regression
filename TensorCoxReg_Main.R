@@ -9,7 +9,7 @@ library(survival)
 setwd('YourDirectory/')
 source("TensorCoxReg_Function.r")
 clinical_data <- read.csv('clinical_data.csv')
-tensor_data <- read.csv('tensor_data.csv')
+tensor_data <- read.csv('tensor_data1.csv')
 
 ####### Preprocessing #########################################################
 
@@ -18,7 +18,7 @@ time <- clinical_data$time
 # status
 status <- clinical_data$status
 # clinical covariates
-z <- as.matrix(clinical_data[,!colnames(clinical_data)%in%c('time', 'status')])
+z <- as.matrix(clinical_data[,!colnames(clinical_data)%in%c('id', 'time', 'status')])
 # transform multi-omic data into tensor covariates
 n_id <- length(unique(tensor_data$id))
 n_platform <- length(unique(tensor_data$platform))
@@ -34,23 +34,14 @@ for (i in 1:n_id){
 ####### Main Function #########################################################
 
 # model applying rank-1 decomposition
-res_nR1 <- TensorCox(time = time, status = status, X = X, z = z, n_R = 1)
-# model applying rank-2 decomposition
-res_nR2 <- TensorCox(time = time, status = status, X = X, z = z, n_R = 2)
-# model applying rank-3 decomposition
-res_nR3 <- TensorCox(time = time, status = status, X = X, z = z, n_R = 3)
+res <- TensorCox(time = time, status = status, X = X, z = z, n_R = 1)
 
-###### Results ################################################################
-
-# Visualize the estimates of B
-par(mfrow = c(1,3))
-image(t(res_nR1$B_EST[6:1,]))
-title(main = "Rank 1", cex.main = 3)
-image(t(res_nR2$B_EST[6:1,]))
-title(main = "Rank 2", cex.main = 3)
-image(t(res_nR3$B_EST[6:1,]))
-title(main = "Rank 3", cex.main = 3)
-
-# Check the AIC
-res_nR1$IC$AIC; res_nR2$IC$AIC; res_nR3$IC$AIC
-
+res$ite
+res$IC
+res$df
+res$b_EST
+res$b_SE
+res$b_PV
+res$B_EST
+res$B_SE
+res$B_PV

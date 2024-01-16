@@ -226,11 +226,18 @@ TensorCox <- function(time, status, X, z, n_R, max_ite = 200, tol = 10^-6){
     B_PV <- pnorm(-abs(Estimate$B_Est/Std_B)) * 2
     b_PV <- pnorm(-abs(Estimate$b_Est/Std_b)) * 2
   }
+  
+  b_EST <- as.numeric(Estimate$b_Est)
+  b_SE <- as.numeric(Std_b)
+  b_PV <- as.numeric(b_PV)
+  names(b_EST) <- names(b_SE) <- names(b_PV) <- colnames(z)
+  B_EST <- Estimate$B_Est
+  B_SE <- Std_B
+  dimnames(B_EST) <- dimnames(B_SE) <- dimnames(B_PV) <- 
+    list(paste0('p',1:6), paste0('g',1:6))
   result <- list(ite = Estimate$ite, 
-                 b_EST = Estimate$b_Est, b_SE = Std_b, 
-                 b_PV = b_PV,
-                 B_EST = Estimate$B_Est, B_SE = Std_B, 
-                 B_PV = B_PV, 
+                 b_EST = b_EST, b_SE = b_SE, b_PV = b_PV,
+                 B_EST = B_EST, B_SE = B_SE, B_PV = B_PV, 
                  IC = IC, df = df)
   return(result)
 }
