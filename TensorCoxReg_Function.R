@@ -189,7 +189,7 @@ Calculate_IC <- function(DATA, n_R, B, beta, df){
   AIC <- -2*mlpl+2*df
   # BIC use the number of events in the penalty term
   BIC<- -2*mlpl+log(sum(status))*df
-  return(list(mlpl = mlpl, AIC = AIC, BIC = BIC))
+  return(list(AIC = AIC, BIC = BIC))
 }
 
 ####### Main function #########
@@ -227,9 +227,10 @@ TensorCox <- function(time, status, X, z, n_R, max_ite = 200, tol = 10^-6){
     b_PV <- pnorm(-abs(Estimate$b_Est/Std_b)) * 2
   }
   result <- list(ite = Estimate$ite, 
-                 b_EST = Estimate$b_Est, b_SD = Std_b,
-                 B_EST = Estimate$B_Est, B_SD = Std_B,
-                 B_PV = B_PV, b_PV = b_PV, 
+                 b_EST = Estimate$b_Est, b_SE = Std_b, 
+                 b_PV = b_PV,
+                 B_EST = Estimate$B_Est, B_SE = Std_B, 
+                 B_PV = B_PV, 
                  IC = IC, df = df)
   return(result)
 }
