@@ -34,6 +34,10 @@
 
 * `ite`: The number of iterations completed by the algorithm.
 
+* `IC`: Information criteria, including AIC and BIC with the number of events in the penalty term.
+
+* `df`: Degrees of freedom.
+
 * `b_EST`: The estimated coefficients for classical covariates.
 
 * `b_SE`: The estimated standard deviation of coefficients for classical covariates.
@@ -45,7 +49,3 @@
 * `B_SE`: The estimated standard deviation of coefficients for tensor covariates.
 
 * `B_PV`: The p-value for tensor covariates.
-
-* `IC`: Information criteria, including AIC and BIC with the number of events in the penalty term.
-
-* `df`: Degrees of freedom.
