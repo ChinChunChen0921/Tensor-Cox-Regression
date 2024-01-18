@@ -9,7 +9,7 @@ library(survival)
 setwd('YourDirectory/')
 source("TensorCoxReg_Function.r")
 clinical_data <- read.csv('clinical_data.csv')
-tensor_data <- read.csv('tensor_data1.csv')
+tensor_data <- read.csv('tensor_data.csv')
 
 ####### Preprocessing #########################################################
 
