@@ -234,7 +234,7 @@ TensorCox <- function(time, status, X, z, n_R, max_ite = 200, tol = 10^-6){
   B_EST <- Estimate$B_Est
   B_SE <- Std_B
   dimnames(B_EST) <- dimnames(B_SE) <- dimnames(B_PV) <- 
-    list(paste0('p',1:6), paste0('g',1:6))
+    list(paste0('p',1:n_P), paste0('g',1:n_G))
   result <- list(ite = Estimate$ite, 
                  b_EST = b_EST, b_SE = b_SE, b_PV = b_PV,
                  B_EST = B_EST, B_SE = B_SE, B_PV = B_PV, 
